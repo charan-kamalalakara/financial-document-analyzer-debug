@@ -1,25 +1,17 @@
-# Core Framework
+# CrewAI framework
 crewai==0.130.0
 crewai-tools==0.47.1
 
-# API Layer
+# API server
 fastapi==0.110.3
 uvicorn[standard]
 
-# LLM Providers
-openai==1.30.5
-google-generativeai==0.5.4
-
-# Data Processing
-pandas==2.2.2
-numpy==1.26.4
-pillow==10.3.0
-onnxruntime==1.22.0
-
-# Validation
-pydantic>=2.4.2
-
-# Utilities
+# Environment variables
 python-dotenv
-jinja2
-jsonschema
+
+# PDF processing (needed for Pdf loader bug we will fix next)
+pypdf
+pdfplumber
+
+# Utilities automatically resolved
+pydantic>=2.4.2
