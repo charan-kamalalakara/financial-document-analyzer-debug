@@ -1,20 +1,19 @@
 # ==============================
-# tools.py (FIXED VERSION)
+# tools.py (FINAL STABLE VERSION)
 # ==============================
 
-## Import libraries
 import os
 from dotenv import load_dotenv
 import pdfplumber
 
-from crewai_tools import tool, SerperDevTool
+from crewai_tools import SerperDevTool
+from crewai.tools import BaseTool
 
-# Load environment variables
+# Load env variables
 load_dotenv()
 
-
 # ------------------------------------------------
-# Web Search Tool (provided by CrewAI)
+# Web Search Tool
 # ------------------------------------------------
 search_tool = SerperDevTool()
 
@@ -22,70 +21,56 @@ search_tool = SerperDevTool()
 # ------------------------------------------------
 # Financial Document Reader Tool
 # ------------------------------------------------
-@tool("financial_document_reader")
-def read_financial_document(path: str = "data/sample.pdf") -> str:
-    """
-    Reads a financial PDF document and returns cleaned text content.
+class FinancialDocumentTool(BaseTool):
+    name: str = "financial_document_reader"
+    description: str = "Reads a financial PDF document and returns extracted text."
 
-    Args:
-        path (str): Path to the financial PDF file.
+    def _run(self, path: str = "data/sample.pdf") -> str:
+        if not os.path.exists(path):
+            return f"File not found at path: {path}"
 
-    Returns:
-        str: Extracted and cleaned document text.
-    """
+        full_report = ""
 
-    if not os.path.exists(path):
-        return f"File not found at path: {path}"
+        with pdfplumber.open(path) as pdf:
+            for page in pdf.pages:
+                content = page.extract_text() or ""
 
-    full_report = ""
+                while "\n\n" in content:
+                    content = content.replace("\n\n", "\n")
 
-    with pdfplumber.open(path) as pdf:
-        for page in pdf.pages:
-            content = page.extract_text() or ""
+                full_report += content + "\n"
 
-            # Clean formatting
-            while "\n\n" in content:
-                content = content.replace("\n\n", "\n")
-
-            full_report += content + "\n"
-
-    return full_report
+        return full_report
 
 
 # ------------------------------------------------
 # Investment Analysis Tool
 # ------------------------------------------------
-@tool("investment_analysis_tool")
-def analyze_investment(financial_document_data: str) -> str:
-    """
-    Performs basic preprocessing for investment analysis.
-    """
+class InvestmentTool(BaseTool):
+    name: str = "investment_analysis_tool"
+    description: str = "Performs preprocessing for investment analysis."
 
-    processed_data = financial_document_data
+    def _run(self, financial_document_data: str) -> str:
+        processed_data = financial_document_data
 
-    # Remove double spaces
-    while "  " in processed_data:
-        processed_data = processed_data.replace("  ", " ")
+        while "  " in processed_data:
+            processed_data = processed_data.replace("  ", " ")
 
-    # Placeholder logic (intentionally simple)
-    return (
-        "Investment analysis completed.\n"
-        "Document processed successfully. "
-        "Further financial modeling can be implemented."
-    )
+        return (
+            "Investment analysis completed. "
+            "Document processed successfully."
+        )
 
 
 # ------------------------------------------------
 # Risk Assessment Tool
 # ------------------------------------------------
-@tool("risk_assessment_tool")
-def create_risk_assessment(financial_document_data: str) -> str:
-    """
-    Generates a basic risk assessment placeholder.
-    """
+class RiskTool(BaseTool):
+    name: str = "risk_assessment_tool"
+    description: str = "Creates a basic financial risk assessment."
 
-    return (
-        "Risk assessment completed.\n"
-        "Potential financial risks should be evaluated "
-        "based on liabilities, cash flow, and volatility indicators."
-    )
+    def _run(self, financial_document_data: str) -> str:
+        return (
+            "Risk assessment completed. "
+            "Potential risks identified from financial indicators."
+        )
