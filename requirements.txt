@@ -15,3 +15,5 @@ pdfplumber
 
 # Utilities automatically resolved
 pydantic>=2.4.2
+
+python-multipart
