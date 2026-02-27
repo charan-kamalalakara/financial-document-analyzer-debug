@@ -17,3 +17,5 @@ pdfplumber
 pydantic>=2.4.2
 
 python-multipart
+
+google-auth
