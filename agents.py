@@ -19,8 +19,10 @@ from tools import (
 # LLM Configuration
 # ------------------------------------------------
 llm = LLM(
-    model="gemini/gemini-1.5-flash",
-    temperature=0.2
+    model="gemini-1.5-flash",
+    temperature=0.2,
+    api_key=os.getenv("GOOGLE_API_KEY"),
+    provider="google"
 )
 
 # ------------------------------------------------

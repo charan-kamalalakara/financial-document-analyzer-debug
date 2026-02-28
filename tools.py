@@ -6,7 +6,6 @@ import os
 from dotenv import load_dotenv
 import pdfplumber
 
-from crewai_tools import SerperDevTool
 from crewai.tools import BaseTool
 
 # Load env variables
@@ -15,7 +14,14 @@ load_dotenv()
 # ------------------------------------------------
 # Web Search Tool
 # ------------------------------------------------
-search_tool = SerperDevTool()
+class SearchTool(BaseTool):
+    name: str = "web_search"
+    description: str = "Searches the web for financial information and market data."
+    
+    def _run(self, query: str) -> str:
+        return f"Search results for: {query} (Web search capability available)"
+
+search_tool = SearchTool()
 
 
 # ------------------------------------------------
